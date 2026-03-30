@@ -175,12 +175,12 @@ compare_strings:
 ; ============= ДАННЫЕ =============
 boot_drive     db 0
 
-sysinfo_full   db '     === BarniOS System Information ===', 13, 10
-               db '         / \__', 13, 10
+sysinfo_full   db '         / \__', 13, 10
                db '        (    @\___', 13, 10
                db '       /        O', 13, 10
                db '      /   (_____/', 13, 10
                db '     /_____/   U', 13, 10
+              
 
 
 welcome_prefix db 'Welcome to BarniOS, ', 0
