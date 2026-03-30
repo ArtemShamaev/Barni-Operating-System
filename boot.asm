@@ -181,9 +181,7 @@ sysinfo_full   db '     === BarniOS System Information ===', 13, 10
                db '       /        O', 13, 10
                db '      /   (_____/', 13, 10
                db '     /_____/   U', 13, 10
-               db '     Copyright (C) BARNINO SYSTEMS', 13, 10
-               db '     (2026), all rights reserved.', 13, 10
-               db '     BarniOS 2.3 with GraFase 2.0 BarnEl 2.4', 13, 10, 0
+
 
 welcome_prefix db 'Welcome to BarniOS, ', 0
 password_prompt db 'Please type password: ', 0
