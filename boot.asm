@@ -184,9 +184,9 @@ sysinfo_full   db '     === BarniOS System Information ===', 13, 10
 
 
 welcome_prefix db 'Welcome to BarniOS, ', 0
-password_prompt db 'Please type password: ', 0
-password_error  db 13, 10, 'Wrong password! Press any key to reboot.', 0
-disk_error_msg  db 13, 10, 'Disk error! Press any key to reboot.', 0
+password_prompt db 'Type password: ', 0
+password_error  db 13, 10, 'Wrong password! Press any key.', 0
+disk_error_msg  db 13, 10, 'Disk error!', 0
 
 ; Буфер для ввода пароля (32 байта)
 password_input  times 32 db 0
