@@ -1177,6 +1177,8 @@ draw_workspace:
     call set_cursor
     mov si, welcome_msg
     call print_str
+    mov si, username_str
+    call print_str
     mov dh, 5
     mov dl, 10
     call set_cursor
@@ -1986,8 +1988,8 @@ menu_help      db ' Help ', 0
 status_text    db ' Ready | BarniOS Professional | Command Line Interface ', 0
 caps_status    db ' CAPS ', 0
 
-welcome_msg    db 'Welcome to BarniOS Professional Edition!', 0
-system_info    db 'System: BarniOS v2.0 | Memory: 640KB | Disk: 1.44MB', 0
+welcome_msg    db 'Welcome to BarniOS, ', 0
+system_info    db 'Copyright (C) BARNINO SYSTEMS', 0
 commands_list  db 'Available commands: type help to show list of commands', 0
 press_any_key  db 'Press any key to continue...', 0
 
@@ -2022,7 +2024,7 @@ sysinfo_full   db '     === BarniOS System Information ===', 13, 10
                db '       /        O', 13, 10
                db '      /   (_____/', 13, 10
                db '     /_____/   U', 13, 10
-               db '     Copyright (C) BARNINO SYSTEMS & Barni Project Team', 13, 10
+               db '     Copyright (C) BARNINO SYSTEMS', 13, 10
                db '     (2026), all rights reserved.', 13, 10
                db '     BarniOS 2.3 with GraFase 2.0 BarnEl 2.4', 13, 10, 0
 
@@ -2085,6 +2087,7 @@ num_buffer_len  db 0
 operator        db 0
 number_input    times 6 db 0
 number_len      db 0
-
+; ... (в секции данных, после других строк)
+username_str    db "__USERNAME__", 0   ; будет заменено make
 ; ============= ЗАПОЛНЕНИЕ ДО 100 СЕКТОРОВ =============
 times 51200-($-$$) db 0
