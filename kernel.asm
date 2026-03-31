@@ -5,11 +5,17 @@
 ; - обновляемого приглашения с текущим путём
 ; - текстового редактора с нормальной навигацией
 ; - игр и калькулятора
+; - русского языка и переключения раскладки по Win
 ; Исправлены все ошибки 16-битной адресации и добавлены недостающие определения команд
 ; ========================================================
 
 use16
 org 0x7e00
+
+; ==================== УСЛОВНАЯ КОМПИЛЯЦИЯ ====================
+; Если определён RUSSIAN, используются русские сообщения,
+; иначе английские. Имя пользователя и пароль подставляются через sed.
+; ==============================================================
 
 kernel_start:
     ; Инициализация сегментов и стека
@@ -29,6 +35,9 @@ kernel_start:
 
     ; Инициализация графического интерфейса
     call init_interface
+
+    ; === ЗАПРОС ПАРОЛЯ ===
+    call password_login
 
     ; Основной цикл
 main_loop:
@@ -563,9 +572,8 @@ edit_file:
     call editor_refresh_text
     call update_status_line
     call editor_set_cursor
-    xor ax, ax
-    int 0x16
-
+    call getchar_layout   ; вместо int 0x16
+    ; Проверка на специальные клавиши (скан-код в AH)
     cmp ah, 0x01          ; ESC
     je .exit_editor
     cmp ah, 0x48          ; Up
@@ -1179,6 +1187,8 @@ draw_workspace:
     call print_str
     mov si, username_str
     call print_str
+    mov al, '!'
+    call print_char
     mov dh, 5
     mov dl, 10
     call set_cursor
@@ -1260,8 +1270,7 @@ get_command:
     mov dl, 17
     call set_cursor
 .input_loop:
-    xor ax, ax
-    int 0x16
+    call getchar_layout
     cmp al, 13
     je .enter
     cmp al, 8
@@ -1476,8 +1485,7 @@ guess_game:
     call set_cursor
     mov si, game_exit_msg
     call print_str
-    xor ax, ax
-    int 0x16
+    call wait_any_key
     ret
 .too_low:
     mov dh, 12
@@ -1518,8 +1526,7 @@ get_user_number:
     mov dl, 22
     call set_cursor
 .input_num:
-    xor ax, ax
-    int 0x16
+    call getchar_layout
     cmp al, 13
     je .process
     cmp al, 8
@@ -1696,8 +1703,7 @@ calc_program:
     call set_cursor
     mov si, calc_anykey
     call print_str
-    xor ax, ax
-    int 0x16
+    call wait_any_key
     ret
 
 read_number:
@@ -1713,8 +1719,7 @@ read_number:
     loop .clear
     mov di, number_input
 .input:
-    xor ax, ax
-    int 0x16
+    call getchar_layout
     cmp al, 13
     je .done
     cmp al, 8
@@ -1767,8 +1772,7 @@ read_operator:
     push cx
     push dx
 .input:
-    xor ax, ax
-    int 0x16
+    call getchar_layout
     cmp al, '+'
     je .valid
     cmp al, '-'
@@ -1969,8 +1973,7 @@ process_command:
     call set_cursor
     mov si, press_any_key
     call print_str
-    xor ax, ax
-    int 0x16
+    call wait_any_key
     mov ah, 0x06
     mov al, 0
     mov bh, 0x70
@@ -1988,8 +1991,75 @@ menu_help      db ' Help ', 0
 status_text    db ' Ready | BarniOS Professional | Command Line Interface ', 0
 caps_status    db ' CAPS ', 0
 
-welcome_msg    db 'Welcome to BarniOS, ', 0
-system_info    db 'Copyright (C) BARNINO SYSTEMS', 0
+%ifdef RUSSIAN
+welcome_msg    db 'Добро пожаловать в BarniOS Professional, ', 0
+system_info    db 'Система: BarniOS v2.0 | Память: 640KB | Диск: 1.44MB', 0
+commands_list  db 'Доступные команды: введите help для списка команд', 0
+press_any_key  db 'Нажмите любую клавишу для продолжения...', 0
+
+help_full db 'Доступные команды:', 13, 10
+          db '  clr     - Очистить экран', 13, 10
+          db '  reboot  - Перезагрузить', 13, 10
+          db '  help    - Эта справка', 13, 10
+          db '  sysinfo - Информация о системе', 13, 10
+          db '  guess   - Игра "Угадай число"', 13, 10
+          db '  calc    - Калькулятор', 13, 10
+          db '  time    - Показать время', 13, 10
+          db '  date    - Показать дату', 13, 10
+          db '  ls      - Список файлов', 13, 10
+          db '  write to <file> - Создать/редактировать', 13, 10
+          db '  write in <file> - Открыть файл', 13, 10
+          db '  cd <dir> - Сменить директорию', 13, 10
+          db '  cd ..    - На уровень вверх', 13, 10
+          db '  mkdir <dir> - Создать директорию', 13, 10, 0
+
+unknown_cmd    db 'Ошибка: Неизвестная команда. Введите "help" для списка команд.', 0
+
+err_no_free   db 'Ошибка: Нет свободных слотов для файлов!', 13,10,0
+err_not_found db 'Ошибка: Файл не найден!', 13,10,0
+err_readonly  db 'Предупреждение: Этот файл доступен только для чтения.', 13,10,0
+err_invalid_name db 'Ошибка: Неверное имя файла.', 13,10,0
+err_not_dir   db 'Ошибка: Не директория.', 13,10,0
+err_cd_up     db 'Ошибка: Уже в корне.', 13,10,0
+
+sysinfo_full   db '     === Информация о системе BarniOS ===', 13, 10
+               db '         / \__', 13, 10
+               db '        (    @\___', 13, 10
+               db '       /        O', 13, 10
+               db '      /   (_____/', 13, 10
+               db '     /_____/   U', 13, 10
+               db '     Copyright (C) BARNINO SYSTEMS & Barni Project Team', 13, 10
+               db '     (2026), все права защищены.', 13, 10
+               db '     BarniOS 2.3 с GraFase 2.0 BarnEl 2.4', 13, 10, 0
+
+game_title      db '=== Игра "Угадай число" ===', 0
+game_welcome    db 'Я загадал число от 0 до 100.', 0
+game_instructions db 'Попробуй угадать его за как можно меньше попыток!', 0
+game_attempt    db 'Попыток: ', 0
+game_prompt     db 'Твоё число: ', 0
+game_too_low    db 'Нет, моё число больше. Попробуй ещё!', 0
+game_too_high   db 'Нет, моё число меньше. Попробуй ещё!', 0
+game_correct    db 'Поздравляю! Ты угадал число за ', 0
+game_congrats   db ' попыток!', 0
+game_invalid    db 'Пожалуйста, введите число от 0 до 100.', 0
+game_exit_msg   db 'Нажмите любую клавишу для возврата в BarniOS...', 0
+
+calc_title      db '=== Простой калькулятор ===', 0
+calc_prompt1    db 'Введите первое число (0-65535): ', 0
+calc_prompt_op  db 'Введите оператор (+, -, *, /): ', 0
+calc_prompt2    db 'Введите второе число: ', 0
+calc_result     db 'Результат: ', 0
+calc_error_op   db 'Неверный оператор!', 0
+calc_error_divzero db 'Ошибка: Деление на ноль!', 0
+calc_error_overflow db 'Ошибка: Переполнение!', 0
+calc_remainder  db ' остаток ', 0
+calc_anykey     db 'Нажмите любую клавишу для возврата в BarniOS...', 0
+
+password_prompt db 'Введите пароль: ', 0
+password_error  db 13,10, 'Неверный пароль! Нажмите любую клавишу для перезагрузки.', 13,10,0
+%else
+welcome_msg    db 'Welcome to BarniOS Professional, ', 0
+system_info    db 'System: BarniOS v2.0 | Memory: 640KB | Disk: 1.44MB', 0
 commands_list  db 'Available commands: type help to show list of commands', 0
 press_any_key  db 'Press any key to continue...', 0
 
@@ -2024,7 +2094,7 @@ sysinfo_full   db '     === BarniOS System Information ===', 13, 10
                db '       /        O', 13, 10
                db '      /   (_____/', 13, 10
                db '     /_____/   U', 13, 10
-               db '     Copyright (C) BARNINO SYSTEMS', 13, 10
+               db '     Copyright (C) BARNINO SYSTEMS & Barni Project Team', 13, 10
                db '     (2026), all rights reserved.', 13, 10
                db '     BarniOS 2.3 with GraFase 2.0 BarnEl 2.4', 13, 10, 0
 
@@ -2050,6 +2120,10 @@ calc_error_divzero db 'Error: Division by zero!', 0
 calc_error_overflow db 'Error: Overflow!', 0
 calc_remainder  db ' remainder ', 0
 calc_anykey     db 'Press any key to return to BarniOS...', 0
+
+password_prompt db 'Please type password: ', 0
+password_error  db 13,10, 'Wrong password! Press any key to reboot.', 13,10,0
+%endif
 
 ; ---------- СТРОКИ КОМАНД (добавлены) ----------
 cmd_ls          db 'ls', 0
@@ -2087,7 +2161,149 @@ num_buffer_len  db 0
 operator        db 0
 number_input    times 6 db 0
 number_len      db 0
-; ... (в секции данных, после других строк)
-username_str    db "__USERNAME__", 0   ; будет заменено make
+
+; ---------- ПЕРЕМЕННЫЕ ПАРОЛЯ И РУССКОЙ РАСКЛАДКИ ----------
+username_str    db "__USERNAME__", 0
+password_str    db "__PASSWORD__", 0
+
+; ============= ФУНКЦИЯ ВВОДА С ПЕРЕКЛЮЧЕНИЕМ РАСКЛАДКИ =============
+layout_flag db 0         ; 0 - EN, 1 - RU
+
+; Таблица преобразования английских букв в русские (CP866)
+; для строчных: a->а, b->б, ..., z->я
+ru_lower_table:
+    db 0xE0, 0xE2, 0xE7, 0xE5, 0xE4, 0xE1, 0xE3, 0xE8, 0xE9, 0xEB, 0xEC, 0xED
+    db 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9
+    db 0xFA, 0xFB
+; для заглавных: A->А, B->Б, ..., Z->Я
+ru_upper_table:
+    db 0xC0, 0xC2, 0xC7, 0xC5, 0xC4, 0xC1, 0xC3, 0xC8, 0xC9, 0xCB, 0xCC, 0xCD
+    db 0xCE, 0xCF, 0xD0, 0xD1, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7, 0xD8, 0xD9
+    db 0xDA, 0xDB
+
+getchar_layout:
+    push bx
+    push cx
+    push dx
+    push si
+    push di
+.loop:
+    xor ax, ax
+    int 0x16
+    ; Проверяем, не нажата ли клавиша Win (левая 0x5B, правая 0x5C)
+    cmp ah, 0x5B
+    je .toggle_layout
+    cmp ah, 0x5C
+    je .toggle_layout
+    ; Если символ не ASCII (AL=0), повторяем
+    cmp al, 0
+    je .loop
+    ; Если раскладка русская и символ – буква, преобразуем
+    cmp byte [layout_flag], 1
+    jne .done
+    cmp al, 'a'
+    jb .check_upper
+    cmp al, 'z'
+    ja .check_upper
+    ; строчная английская
+    sub al, 'a'
+    mov bx, ru_lower_table
+    xlat
+    jmp .done
+.check_upper:
+    cmp al, 'A'
+    jb .done
+    cmp al, 'Z'
+    ja .done
+    sub al, 'A'
+    mov bx, ru_upper_table
+    xlat
+    jmp .done
+.toggle_layout:
+    xor byte [layout_flag], 1
+    jmp .loop
+.done:
+    pop di
+    pop si
+    pop dx
+    pop cx
+    pop bx
+    ret
+
+; ============= ЗАПРОС ПАРОЛЯ =============
+password_login:
+    pusha
+    ; Очищаем область вывода (нижнюю часть)
+    mov ah, 0x06
+    mov al, 0
+    mov bh, 0x70
+    mov cx, 0x0A01
+    mov dx, 0x164E
+    int 0x10
+    mov dh, 10
+    mov dl, 10
+    call set_cursor
+    ; Приветствие
+    mov si, welcome_msg
+    call print_str
+    mov si, username_str
+    call print_str
+    mov al, '!'
+    call print_char
+    call new_line
+    ; Запрос пароля
+    mov si, password_prompt
+    call print_str
+    ; Чтение пароля
+    mov di, password_input
+    mov cx, 0
+.read_pass:
+    call getchar_layout
+    cmp al, 13          ; Enter
+    je .check
+    cmp al, 8           ; Backspace
+    je .backspace
+    cmp cx, 31          ; максимум 31 символ
+    jae .read_pass
+    stosb
+    inc cx
+    mov al, '*'
+    call print_char
+    jmp .read_pass
+.backspace:
+    test cx, cx
+    jz .read_pass
+    dec di
+    dec cx
+    mov al, 8
+    call print_char
+    mov al, ' '
+    call print_char
+    mov al, 8
+    call print_char
+    jmp .read_pass
+.check:
+    mov byte [di], 0
+    call new_line
+    ; Сравнение паролей
+    mov si, password_input
+    mov di, password_str
+    call strcmp
+    jc .ok
+    ; Неверный пароль
+    mov si, password_error
+    call print_str
+    call wait_any_key
+    int 0x19            ; перезагрузка
+.ok:
+    popa
+    ret
+
+password_input  times 32 db 0
+wait_any_key:
+    xor ax, ax
+    int 0x16
+    ret
+
 ; ============= ЗАПОЛНЕНИЕ ДО 100 СЕКТОРОВ =============
 times 51200-($-$$) db 0
