@@ -202,6 +202,7 @@ kernel_start:
     mov es, ax
     mov ss, ax
     mov sp, 0x7c00
+    mov al, 0
     call init_cyrillic_font
     ; Инициализация файловой системы (создаём docs.txt)
     call init_filesystem
