@@ -1,11 +1,14 @@
 #!/bin/bash
 # BarniOS Configuration Script
-# Сохраняет имя пользователя и пароль в config.txt
-
+echo "BarniOS Configuration"
 read -p "Enter username: " username
 read -s -p "Enter password: " password
 echo
-echo "Saving configuration..."
+echo "Select language:"
+echo "1 - Russian"
+echo "2 - English"
+read -p "Choice (1/2): " lang
 echo "$username" > config.txt
 echo "$password" >> config.txt
+echo "$lang" >> config.txt
 echo "Configuration saved."
