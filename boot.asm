@@ -74,10 +74,8 @@ start:
     jmp 0x0000:0x7e00
 
 .disk_error:
-    mov si, disk_error_msg
-    call print_str
-    call wait_key
-    int 0x19
+   hlt
+   jmp $
 
 ; ============= ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =============
 
@@ -175,20 +173,17 @@ compare_strings:
 ; ============= ДАННЫЕ =============
 boot_drive     db 0
 
-sysinfo_full   db '     === BarniOS System Information ===', 13, 10
-               db '         / \__', 13, 10
-               db '        (    @\___', 13, 10
-               db '       /        O', 13, 10
-               db '      /   (_____/', 13, 10
-               db '     /_____/   U', 13, 10
-               db '     Copyright (C) BARNINO SYSTEMS & Barni Project Team', 13, 10
-               db '     (2026), all rights reserved.', 13, 10
-               db '     BarniOS 2.3 with GraFase 2.0 BarnEl 2.4', 13, 10, 0
+sysinfo_full   db '    / \__', 13, 10
+               db '   (    @\___', 13, 10
+               db '  /        O', 13, 10
+               db ' /   (_____/', 13, 10
+               db '/_____/   U', 13, 10
+               
 
-welcome_prefix db 'Welcome to BarniOS, ', 0
-password_prompt db 'Please type password: ', 0
-password_error  db 13, 10, 'Wrong password! Press any key to reboot.', 0
-disk_error_msg  db 13, 10, 'Disk error! Press any key to reboot.', 0
+welcome_prefix db 'Hello, ', 0
+password_prompt db 'Type password: ', 0
+password_error  db 13, 10, 'Wrong password! Press any key.', 0
+
 
 ; Буфер для ввода пароля (32 байта)
 password_input  times 32 db 0
