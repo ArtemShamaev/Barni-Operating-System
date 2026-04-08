@@ -86,9 +86,11 @@ C:DogCat\>
 
 Подробные условия читайте в файле [LICENSE](LICENSE).
 # Спасибо, что используете Barni Operating System и др. продукты Copyright (C) BARNINO SYSTEMS. Смотрите подробный обзор на каждую версию на [Youtube-канале Barnino Channel](https://www.youtube.com/@barninochannel)
+```
     / \__
    (    @\____
   /        O /
  /   (_____/
  /_____/   U
  Copyright (C) BARNINO SYSTEMS (2026), all rights reserved.
+```
