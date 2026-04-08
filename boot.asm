@@ -180,7 +180,7 @@ sysinfo_full   db '    / \__', 13, 10
                db '/_____/   U', 13, 10
                
 
-welcome_prefix db 'Hello, ', 0
+welcome_prefix db 'hello, ', 0
 password_prompt db 'Type password: ', 0
 password_error  db 13, 10, 'Wrong password! Press any key.', 0
 
