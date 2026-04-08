@@ -1988,7 +1988,7 @@ menu_file      db ' File ', 0
 menu_edit      db ' Edit ', 0
 menu_view      db ' View ', 0
 menu_help      db ' Help ', 0
-status_text    db ' Ready | BarniOS Professional | Command Line Interface ', 0
+status_text    db 'Shamaev Artem, 4 A class.', 0
 caps_status    db ' CAPS ', 0
 
 welcome_msg    db 'Welcome to BarniOS, ', 0
@@ -2028,9 +2028,9 @@ sysinfo_full   db '     === BarniOS System Information ===', 13, 10
                db '       /        O', 13, 10
                db '      /   (_____/', 13, 10
                db '     /_____/   U', 13, 10
-               db '     Copyright (C) BARNINO SYSTEMS & Barni Project Team', 13, 10
+               db '     Copyright (C) BARNINO SYSTEMS', 13, 10
                db '     (2026), all rights reserved.', 13, 10
-               db '     BarniOS 2.3 with GraFase 2.0 BarnEl 2.4', 13, 10, 0
+               db '     BarniOS 3.5 Barnino Shell', 13, 10, 0
 
 game_title      db '=== Number Guessing Game ===', 0
 game_welcome    db 'I am thinking of a number between 0 and 100.', 0
