@@ -25,11 +25,7 @@ all: compile run
 download:
 	@echo "==> Installing dependencies..."
 	@if command -v apt > /dev/null; then \
-		sudo apt update && sudo apt install -y nasm qemu-system-x86; \
-	elif command -v pacman > /dev/null; then \
-		sudo pacman -S --noconfirm nasm qemu-full; \
-	elif command -v urpmi > /dev/null; then \
-		sudo urpmi --auto nasm qemu; \
+		sudo apt update; \
 	elif command -v choco > /dev/null; then \
 		echo "Windows detected. Please ensure NASM and QEMU are installed via choco."; \
 		choco install nasm qemu; \
