@@ -54,5 +54,6 @@ make download установит зависемости (нужно запуск
 # exitws - выйти без сохранения
 # usr_name новое_имя - сменить имя полькователя (вместо новое_имя введите новое имя пользователя)
 # change_password новый_пароль - сменить пароль (вместо новый_пароль введите новый пароль).
-
+Если вы хотите скачать через терменал, введите
+# git clone https://github.com/ArtemShamaev/Barni-Operating-System.git
 # Спасибо, что используете BarniOS Install And Config Changer Documentation!
