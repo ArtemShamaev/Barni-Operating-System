@@ -1,5 +1,5 @@
 # Barni Operating System Personal License (BOS-PL)
-Версия 1.0, [Дата]
+Версия 1.5, пятнадцатое апреля дветысячи двадцать шестого года.
 
 ## Определения
 "Программное обеспечение" (ПО) или "Продукт" означает код, документацию и любые связанные материалы проекта "Barni-Operating-System", доступного по адресу: https://github.com/ArtemShamaev/Barni-Operating-System.
