@@ -8,10 +8,10 @@ sudo apt update
 sudo apt insatll qemu-system-x86 qemu-utils make
 git clone https://github.com/ArtemShamaev/Barni-Operating-System.git
 ```
-## Всё, установка завершина.
+## Всё, установка завершена.
 
 
-# Запуск, конфигурация, зависемости
+# Запуск, конфигурация, зависимости
 
 Для конфигурации введите
 
