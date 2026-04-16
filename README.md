@@ -84,7 +84,7 @@ C:DogCat\>
 - ❌ Запрещено изменение, создание производных работ и распространение
 - ❌ Запрещено коммерческое использование без отдельного соглашения
 
-Подробные условия читайте в файле [LICENSE](LICENSE).
+Подробные условия читайте в файле [LICENSE](LICENSE.md).
 # Спасибо, что используете Barni Operating System и др. продукты Copyright (C) BARNINO SYSTEMS. Смотрите подробный обзор на каждую версию на [Youtube-канале Barnino Channel](https://www.youtube.com/@barninochannel)
 ```
     / \__
