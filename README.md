@@ -5,7 +5,7 @@
 
 ```
 sudo apt update
-sudo apt insatll qemu-system-x86 qemu-utils make mtools dosfstools make
+sudo apt insatll qemu-system-x86 qemu-utils make mtools dosfstools make nasm
 git clone https://github.com/ArtemShamaev/Barni-Operating-System.git
 ```
 ## Всё, установка завершена.
@@ -16,7 +16,6 @@ git clone https://github.com/ArtemShamaev/Barni-Operating-System.git
 Для конфигурации введите
 
 ```
-make downdoad
 make config
 ```
 
