@@ -16,6 +16,7 @@ git clone https://github.com/ArtemShamaev/Barni-Operating-System.git
 Для конфигурации введите
 
 ```
+make download
 make config
 ```
 
