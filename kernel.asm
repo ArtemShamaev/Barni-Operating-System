@@ -1993,7 +1993,7 @@ caps_status    db ' CAPS ', 0
 
 welcome_msg    db 'Welcome to BarniOS, ', 0
 username_str   db "__USERNAME__", 0          ; будет заменено при сборке
-system_info    db 'System: BarniOS v2.0 | Memory: 640KB | Disk: 1.44MB', 0
+system_info    db 'System: BarniOS 3.6 | Memory: 640KB | Disk: 1.44MB', 0
 commands_list  db 'Available commands: type help to show list of commands', 0
 press_any_key  db 'Press any key to continue...', 0
 
@@ -2030,7 +2030,7 @@ sysinfo_full   db '     === BarniOS System Information ===', 13, 10
                db '     /_____/   U', 13, 10
                db '     Copyright (C) BARNINO SYSTEMS', 13, 10
                db '     (2026), all rights reserved.', 13, 10
-               db '     BarniOS 3.5 Barnino Shell', 13, 10, 0
+               db '     BarniOS 3.6 Barnino Shell', 13, 10, 0
 
 game_title      db '=== Number Guessing Game ===', 0
 game_welcome    db 'I am thinking of a number between 0 and 100.', 0
