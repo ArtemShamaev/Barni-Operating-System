@@ -10,6 +10,49 @@ git clone https://github.com/ArtemShamaev/Barni-Operating-System.git
 ```
 ## Всё, установка завершена.
 
+# Запись на реальный накопитель
+Для записи на реальный диск выполните: 
+```
+make download
+make config
+```
+После введите имя пользователя и пароль (введеный пароль не отображается).
+Затем введите:
+```
+make compile
+make write
+```
+У Вас спросят на какой диск Вы хотите установить. Вот пример вывода команды:
+```
+==> Assembling bootloader...
+nasm -f bin boot.asm -o boot.bin
+==> Preparing kernel (insert username)...
+==> Assembling kernel...
+nasm -f bin kernel_pre.asm -o kernel.bin
+==> Creating OS image...
+cat boot.bin kernel.bin > os-image.bin
+==> Build complete!
+==> Preparing to write BarniOS to a physical disk...
+Available disks (all data on selected disk will be destroyed!):
+sda      28,9G FLASH DRIVE
+sdb       1,8T TOSHIBA MQ04UBD200
+nvme0n1 476,9G YMTC PC300-512GB-B
+
+Enter disk number (e.g., 1 for sda, 2 for sdb...): 1
+You selected: /dev/sdb
+
+WARNING: All data on /dev/sdb will be IRREVERSIBLY LOST!
+Are you sure? Type 'yes' to continue: yes
+Final confirmation: type 'YES' to proceed: YES
+Writing image to /dev/sdb...
+101+0 records in
+101+0 records out
+51712 bytes (52 kB, 50 KiB) copied, 3,08247 s, 16,8 kB/s
+Success! BarniOS has been written to /dev/sda.
+You can now boot from this disk (ensure CSM/Legacy mode is enabled).
+```
+## ВНИМАНИЕ: ПОСЛЕ ПОТВЕЖДЕНИЯ ВСЕ ДАННЫЕ НА НАКОПИТЕЛЕ БУДУТ УНИЧТОЖЕННЫ БЕЗ ВОЗМОЖНОСТИ ВОССТАНОВЛЕНИЯ! Barnino Systems (C) не несет ответственность за Ваши действия! Будте аккуратны!
+
 
 # Запуск, конфигурация, зависимости
 
